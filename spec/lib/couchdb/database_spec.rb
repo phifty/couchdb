@@ -99,15 +99,15 @@ describe CouchDB::Database do
 
   end
 
-  describe "informations" do
+  describe "information" do
 
-    it "should request database informations" do
+    it "should request database information" do
       Transport::JSON.should_receive(:request).with(
         :get,
         "http://host:1234/test",
         :expected_status_code => 200
       ).and_return("result")
-      @database.informations.should == "result"
+      @database.information.should == "result"
     end
 
   end

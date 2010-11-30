@@ -37,7 +37,7 @@ module CouchDB
       delete! if exists?
     end
 
-    def informations
+    def information
       Transport::JSON.request :get, url, :expected_status_code => 200
     end
 
