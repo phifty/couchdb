@@ -1,0 +1,6 @@
+
+= A straight-forward client for CouchDB.
+
+== Development
+
+This project is still under development. Any bug report and contribution is welcome!
