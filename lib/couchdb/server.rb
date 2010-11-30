@@ -16,7 +16,7 @@ module CouchDB
       other.is_a?(self.class) && @host == other.host && @port == other.port
     end
 
-    def informations
+    def information
       Transport::JSON.request :get, url + "/", :expected_status_code => 200
     end
 

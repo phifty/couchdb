@@ -31,15 +31,15 @@ describe CouchDB::Server do
 
   end
 
-  describe "informations" do
+  describe "information" do
 
-    it "should request server informations" do
+    it "should request server information" do
       Transport::JSON.should_receive(:request).with(
         :get,
         "http://host:1234/",
         :expected_status_code => 200
       ).and_return("result")
-      @server.informations.should == "result"
+      @server.information.should == "result"
     end
 
   end
