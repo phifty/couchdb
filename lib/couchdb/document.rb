@@ -1,12 +1,13 @@
+require 'logger'
 
 module CouchDB
 
   # Base is the main super class of all models that should be stored in CouchDB.
-  # See the README file for more informations.
+  # See the README file for more information.
   class Document
 
     # The NotFoundError will be raised if an operation is tried on a document that
-    # dosen't exists.
+    # doesn't exists.
     class NotFoundError < StandardError; end
 
     attr_reader :database
@@ -40,8 +41,12 @@ module CouchDB
       self["_rev"] = value
     end
 
-    def each_property(&block)
-      @properties.each &block
+    def rev?
+      @properties.has_key? "_rev"
+    end
+
+    def clear_rev
+      @properties.delete "_rev"
     end
 
     def ==(other)
@@ -49,7 +54,7 @@ module CouchDB
     end
 
     def new?
-      self.rev.nil?
+      !self.rev?
     end
 
     def exists?
@@ -75,7 +80,7 @@ module CouchDB
     def destroy
       return false if new?
       Transport::JSON.request :delete, url, :headers => { "If-Match" => self.rev }, :expected_status_code => 200
-      self.rev = nil
+      self.clear_rev
       true
     rescue Transport::UnexpectedStatusCodeError => error
       upgrade_unexpected_status_error error
@@ -107,6 +112,10 @@ module CouchDB
     def upgrade_unexpected_status_error(error)
       raise NotFoundError if error.status_code == 404
       raise error
+    end
+
+    def method_missing(method_name, *arguments, &block)
+      @properties.send method_name, *arguments, &block
     end
 
     def self.create(*arguments)

@@ -62,17 +62,6 @@ describe CouchDB::Document do
 
   end
 
-  describe "each_property" do
-
-    it "should call the given block for each property" do
-      @document["test"] = "test value"
-      result = nil
-      @document.each_property{ |key, value| result = [ key, value ] }
-      result.should == [ "test", "test value" ]
-    end
-
-  end
-
   describe "==" do
 
     it "should be true if the id's of the models are equal" do
@@ -169,12 +158,13 @@ describe CouchDB::Document do
         @document = described_class.new @database
       end
 
-      it "should request the create of the doucment" do
+      it "should request the creation of the document" do
         Transport::JSON.should_receive(:request).with(
           :post,
           "http://host:1234/test",
-          :body => { },
-          :expected_status_code => 201
+          hash_including(
+            :expected_status_code => 201
+          )
         ).and_return({
           "id" => "test_document_2",
           "rev" => 1
@@ -258,12 +248,14 @@ describe CouchDB::Document do
         @document.rev = 1
       end
 
-      it "should request the descroy of the doucment" do
+      it "should request the destruction of the document" do
         Transport::JSON.should_receive(:request).with(
           :delete,
           "http://host:1234/test/test_document_1",
-          :headers => { "If-Match" => 1 },
-          :expected_status_code => 200
+          hash_including(
+            :headers => { "If-Match" => 1 },
+            :expected_status_code => 200
+          )
         )
         @document.destroy
       end
@@ -273,7 +265,7 @@ describe CouchDB::Document do
       end
 
       it "should raise NotFoundError on wrong status code" do
-        Transport::JSON.stub!(:request).and_raise(Transport::UnexpectedStatusCodeError.new(404))
+        Transport::JSON.stub(:request).and_raise(Transport::UnexpectedStatusCodeError.new(404))
         lambda do
           @document.destroy
         end.should raise_error(described_class::NotFoundError)
@@ -284,6 +276,17 @@ describe CouchDB::Document do
         @document.should be_new
       end
 
+    end
+
+  end
+
+  describe "method_missing" do
+
+    it "should pass every call to the inner properties hash" do
+      @document["test"] = "test value"
+      result = nil
+      @document.each{ |key, value| result = [ key, value ] }
+      result.should == [ "test", "test value" ]
     end
 
   end
