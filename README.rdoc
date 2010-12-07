@@ -1,5 +1,43 @@
 
-= A straight-forward client for CouchDB.
+= A straight-forward client for CouchDB REST API.
+
+The intend of this project is to provide a plain, straight-forward abstraction of the CouchDB REST API. The resources
+exposed by the API are simply wrapped into classes.
+
+== An example
+
+  server = CouchDB::Server.new "localhost", 5984
+  database = CouchDB::Database.new server, "test"
+  database.create_if_missing!
+
+  document_one = CouchDB::Document.new database, "_id" => "test_document_1", "category" => "one"
+  document_one.save
+
+  document_two = CouchDB::Document.new database, "_id" => "test_document_2", "category" => "two"
+  document_two.save
+
+  design = CouchDB::Design.new database, "design_1"
+  view = CouchDB::Design::View.new design, "view_1",
+    "function(document) { emit([ document['category'], document['_id'] ]); }"
+  design.save
+
+  collection = view.collection :startkey => [ "one", nil ], :endkey => [ "one", { } ]
+  collection.total_count # => 2
+  collection.size        # => 1
+  collection[0].id       # => "test_document_1"
+  collection[0].key      # => [ "one", "test_document_1" ]
+  collection[0].value    # => nil
+
+  collection.documents.include?(@document_one) # => true
+  collection.documents.include?(@document_two) # => false
+
+This example creates a database on the local CouchDB server (if it's missing) and stores two documents in it. It also
+creates a design document with a view, that makes it possible to select the results by the document's category.
+The <tt>collection</tt> call on that view, returns a subset of the results, by defining a start- and an endkey. The
+collection object itself acts as a proxy to the results. This first request of it's content will actually fetch the
+data from the server.
+If the results are accessed by the <tt>documents</tt> proxy, the <tt>include_docs</tt> parameter will be passed to the
+server and the delivered document hashes will be returned in an array of document (<tt>CouchDB::Document</tt>) objects.
 
 == Development
 
