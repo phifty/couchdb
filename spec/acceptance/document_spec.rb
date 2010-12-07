@@ -5,10 +5,11 @@ describe CouchDB::Document do
   before :each do
     @server = CouchDB::Server.new
     @database = CouchDB::Database.new @server, "test"
+    @database.delete_if_exists!
     @database.create_if_missing!
 
     @document = described_class.new @database, "_id" => "test_document_1", "test" => "test value"
-    @document.save unless @document.exists?
+    @document.save
   end
 
   after :each do

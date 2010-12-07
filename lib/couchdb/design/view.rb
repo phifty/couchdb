@@ -1,4 +1,3 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "document"))
 
 module CouchDB
 
@@ -9,21 +8,26 @@ module CouchDB
     # provides methods to generate simple view javascript functions.
     class View
 
-      attr_reader :design
-      attr_reader :name
+      attr_accessor :design
+      attr_accessor :name
       attr_accessor :map
       attr_accessor :reduce
 
       def initialize(design, name, map = nil, reduce = nil)
         @design, @name, @map, @reduce = design, name, map, reduce
+        @design.views << self
       end
 
       def to_hash
         { @name => { "map" => @map, "reduce" => @reduce } }
       end
 
+      def collection(options = { })
+        @design ? Collection.new(@design.database, url, options) : nil
+      end
+
       def url
-        "#{@design.url}/_view/#{@name}"
+        @design ? "#{@design.url}/_view/#{@name}" : nil
       end
 
     end

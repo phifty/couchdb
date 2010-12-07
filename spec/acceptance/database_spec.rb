@@ -38,9 +38,17 @@ describe CouchDB::Database do
     before :each do
       @database.create_if_missing!
     end
-    
+
     it "should return information about the database" do
       @database.information.should be_instance_of(Hash)
+    end
+
+  end
+
+  describe "documents" do
+
+    it "should return a collection" do
+      @database.documents.should be_instance_of(CouchDB::Collection)
     end
 
   end

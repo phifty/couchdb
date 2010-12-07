@@ -128,8 +128,9 @@ describe CouchDB::Database do
   describe "documents" do
 
     it "should return a collection" do
-      pending
-      @database.documents.should be_instance_of(CouchDB::Collection)
+      collection = @database.documents
+      collection.should be_instance_of(CouchDB::Collection)
+      collection.url.should == "http://host:1234/test/_all_docs"
     end
 
   end

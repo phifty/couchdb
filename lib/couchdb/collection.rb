@@ -9,7 +9,7 @@ module CouchDB
     REQUEST_PARAMETER_KEYS = [
       :key, :startkey, :startkey_docid, :endkey, :endkey_docid,
       :limit, :stale, :descending, :skip, :group, :group_level,
-      :reduce, :inclusive_end
+      :reduce, :inclusive_end, :include_docs
     ].freeze unless defined?(REQUEST_PARAMETER_KEYS)
 
     ARRAY_METHOD_NAMES = [
@@ -20,12 +20,14 @@ module CouchDB
       :values_at, :zip
     ].freeze unless defined?(ARRAY_METHOD_NAMES)
 
+    attr_reader :database
     attr_reader :url
     attr_reader :options
+    attr_reader :documents
 
-    def initialize(url, options = { })
-      @url, @options = url, options
-      @options[:returns] ||= :models
+    def initialize(database, url, options = { })
+      @database, @url, @options = database, url, options
+      @documents = DocumentsProxy.new self
     end
 
     def total_count
@@ -64,23 +66,25 @@ module CouchDB
     def fetch_response
       @response = Transport::JSON.request(
         :get, url,
-        :parameters            => request_parameters,
-        :expected_status_code  => 200
+        :parameters => request_parameters,
+        :expected_status_code => 200,
+        :encode_parameters => true
       )
     end
 
     def fetch_meta_response
       @response = Transport::JSON.request(
         :get, url,
-        :parameters            => request_parameters.merge(:limit => 0),
-        :expected_status_code  => 200
+        :parameters => request_parameters.merge(:limit => 0),
+        :expected_status_code => 200,
+        :encode_parameters => true
       )
     end
 
     def request_parameters
-      parameters = { :include_docs => true }
+      parameters = { }
       REQUEST_PARAMETER_KEYS.each do |key|
-        parameters[ key ] = @options[key] if @options.has_key?(key)
+        parameters[key] = @options[key] if @options.has_key?(key)
       end
       parameters
     end
@@ -90,9 +94,26 @@ module CouchDB
     end
 
     def evaluate_entries
-      @entries = (@response["rows"] || [ ]).map do |row_hash|
-        Row.new row_hash
+      @entries = (@response["rows"] || [ ]).map{ |row_hash| Row.new @database, row_hash }
+    end
+
+    # A proxy class for the collection's fetched documents.
+    class DocumentsProxy
+
+      def initialize(collection)
+        @collection = collection
       end
+
+      def method_missing(method_name, *arguments, &block)
+        if ARRAY_METHOD_NAMES.include?(method_name)
+          @collection.options[:include_docs] = true
+          @documents = @collection.map{ |row| row.document }
+          @documents.send method_name, *arguments, &block
+        else
+          super
+        end
+      end
+
     end
 
   end

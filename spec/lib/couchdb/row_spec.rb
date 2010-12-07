@@ -3,6 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_hel
 describe CouchDB::Row do
 
   before :each do
+    @database = mock CouchDB::Database
     @hash = {
       "id" => "test id",
       "key" => "test key",
@@ -12,10 +13,14 @@ describe CouchDB::Row do
         "name" => "test doc name"
       }
     }
-    @row = described_class.new @hash
+    @row = described_class.new @database, @hash
   end
 
   describe "initialize" do
+
+    it "should assign the database" do
+      @row.database.should == @database
+    end
 
     it "should assign the id" do
       @row.id.should == "test id"
@@ -29,11 +34,21 @@ describe CouchDB::Row do
       @row.value.should == "test value"
     end
 
-    it "should assign the document" do
-      @row.document.should == {
-        "_id" => "test doc id",
-        "name" => "test doc name"
-      }
+  end
+
+  describe "document" do
+
+    it "should return a document" do
+      @row.document.should be_instance_of(CouchDB::Document)
+    end
+
+    it "should return a document with the right database" do
+      @row.document.database.should == @database
+    end
+
+    it "should return a document with the right properties" do
+      @row.document.id.should == "test doc id"
+      @row.document["name"].should == "test doc name"
     end
 
   end
