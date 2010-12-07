@@ -8,6 +8,7 @@ exposed by the API are simply wrapped into classes.
 
   server = CouchDB::Server.new "localhost", 5984
   database = CouchDB::Database.new server, "test"
+  database.delete_if_exists!
   database.create_if_missing!
 
   document_one = CouchDB::Document.new database, "_id" => "test_document_1", "category" => "one"
@@ -28,8 +29,8 @@ exposed by the API are simply wrapped into classes.
   collection[0].key      # => [ "one", "test_document_1" ]
   collection[0].value    # => nil
 
-  collection.documents.include?(@document_one) # => true
-  collection.documents.include?(@document_two) # => false
+  collection.documents.include? document_one # => true
+  collection.documents.include? document_two # => false
 
 This example creates a database on the local CouchDB server (if it's missing) and stores two documents in it. It also
 creates a design document with a view, that makes it possible to select the results by the document's category.
