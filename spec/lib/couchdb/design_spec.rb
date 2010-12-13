@@ -84,12 +84,12 @@ describe CouchDB::Design do
       end
 
       it "should initialize a new view" do
-        CouchDB::Design::View.should_receive(:new).with("test_view", "test_map", "test_reduce").and_return(@view)
-        @design.views["test_view"]
+        CouchDB::Design::View.should_receive(:new).with(@design, "test_view", "test_map", "test_reduce").and_return(@view)
+        @design.views[:test_view]
       end
 
       it "should return the new view" do
-        @design.views["test_view"].should == @view
+        @design.views[:test_view].should == @view
       end
 
     end

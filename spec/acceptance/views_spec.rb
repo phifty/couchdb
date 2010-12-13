@@ -19,6 +19,17 @@ describe "views" do
     @design.save
   end
 
+  describe "selecting a view by it's name" do
+
+    it "should return the right view" do
+      view = @design.views[:view_1]
+      view.should be_instance_of(CouchDB::Design::View)
+      view.map.should == @view.map
+      view.reduce.should == @view.reduce
+    end
+
+  end
+
   describe "collection" do
 
     it "should return a collection including the right rows" do

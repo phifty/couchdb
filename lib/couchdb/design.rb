@@ -46,8 +46,9 @@ module CouchDB
       end
 
       def [](name)
+        name = name.to_s
         map, reduce = @design["views"][name].values_at("map", "reduce")
-        Design::View.new name, map, reduce
+        Design::View.new @design, name, map, reduce
       end
 
     end
