@@ -92,6 +92,10 @@ describe CouchDB::Design do
         @design.views[:test_view].should == @view
       end
 
+      it "should return nil if view doesn't exists" do
+        @design.views[:invalid].should be_nil
+      end
+
     end
 
   end
