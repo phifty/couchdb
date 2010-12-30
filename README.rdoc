@@ -45,3 +45,8 @@ server and the delivered document hashes will be returned as an array of documen
 == Development
 
 This project is still under development. Any bug report and contribution is welcome!
+
+== Support
+
+Apart from contribution, support via
+Flattr[http://flattr.com/thing/108993/A-straight-forward-client-for-CouchDB-REST-API] is welcome.
