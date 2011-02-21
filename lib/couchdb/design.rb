@@ -20,7 +20,7 @@ module CouchDB
     end
 
     def id=(value)
-      super "_design/#{value}"
+      super (value =~ /^_design\//) ? value : "_design/#{value}"
     end
 
     def language
@@ -29,6 +29,10 @@ module CouchDB
 
     def language=(value)
       self["language"] = value
+    end
+
+    def url
+      "#{self.database.url}/_design/#{self.id}"
     end
 
     private

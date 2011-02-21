@@ -60,6 +60,15 @@ describe CouchDB::Design do
 
   end
 
+  describe "url" do
+
+    it "should return the database url combined with the _design prefix and the id" do
+      url = @design.url
+      url.should == "http://host:1234/test/_design/test_design"
+    end
+
+  end
+
   describe "views" do
 
     before :each do
