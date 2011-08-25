@@ -18,9 +18,15 @@ describe CouchDB::UserDatabase do
       @user.save
     end
 
-    it "should return an array of all uses" do
+    it "should list the user if created" do
       users = @user_database.users
       users.should == [ @user ]
+    end
+
+    it "should not list the user if destroyed" do
+      @user.destroy
+      users = @user_database.users
+      users.should == [ ]
     end
 
   end

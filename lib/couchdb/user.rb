@@ -65,4 +65,8 @@ class CouchDB::User
     retry
   end
 
+  def destroy
+    @document.destroy
+  end
+
 end
