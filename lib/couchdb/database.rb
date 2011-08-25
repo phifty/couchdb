@@ -21,7 +21,7 @@ module CouchDB
     end
 
     def create!
-      Transport::JSON.request :put, url, :expected_status_code => 201
+      Transport::JSON.request :put, url, authentication_options.merge(:expected_status_code => 201)
     end
 
     def create_if_missing!
@@ -29,7 +29,7 @@ module CouchDB
     end
 
     def delete!
-      Transport::JSON.request :delete, url, :expected_status_code => 200
+      Transport::JSON.request :delete, url, authentication_options.merge(:expected_status_code => 200)
     end
 
     def delete_if_exists!
@@ -37,7 +37,7 @@ module CouchDB
     end
 
     def information
-      Transport::JSON.request :get, url, :expected_status_code => 200
+      Transport::JSON.request :get, url, authentication_options.merge(:expected_status_code => 200)
     end
 
     def exists?
@@ -50,6 +50,10 @@ module CouchDB
 
     def documents(options = { })
       Collection.new self, url + "/_all_docs", options
+    end
+
+    def authentication_options
+      @server.authentication_options
     end
 
   end

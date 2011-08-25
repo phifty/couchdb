@@ -66,18 +66,22 @@ module CouchDB
     def fetch_response
       @response = Transport::JSON.request(
         :get, url,
-        :parameters => request_parameters,
-        :expected_status_code => 200,
-        :encode_parameters => true
+        authentication_options.merge(
+          :parameters => request_parameters,
+          :expected_status_code => 200,
+          :encode_parameters => true
+        )
       )
     end
 
     def fetch_meta_response
       @response = Transport::JSON.request(
         :get, url,
-        :parameters => request_parameters.merge(:limit => 0),
-        :expected_status_code => 200,
-        :encode_parameters => true
+        authentication_options.merge(
+          :parameters => request_parameters.merge(:limit => 0),
+          :expected_status_code => 200,
+          :encode_parameters => true
+        )
       )
     end
 
@@ -95,6 +99,10 @@ module CouchDB
 
     def evaluate_entries
       @entries = (@response["rows"] || [ ]).map{ |row_hash| Row.new @database, row_hash }
+    end
+
+    def authentication_options
+      @database.authentication_options
     end
 
     # A proxy class for the collection's fetched documents.
