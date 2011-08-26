@@ -13,8 +13,7 @@ class CouchDB::UserDatabase
   def users
     @database.documents.map do |row|
       if row.id =~ /^org\.couchdb\.user:.+$/
-        user = CouchDB::User.new self
-        user.id = row.id
+        user = CouchDB::User.new self, row.id.sub(/^org\.couchdb\.user:/, "")
         user.load
         user
       else

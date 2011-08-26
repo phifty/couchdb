@@ -51,6 +51,14 @@ module CouchDB
       @properties.delete "_rev"
     end
 
+    def fetch_rev
+      properties = Transport::JSON.request :get, url, authentication_options.merge(:expected_status_code => 200)
+      self.rev = properties["_rev"]
+    rescue Transport::UnexpectedStatusCodeError => error
+      raise error unless error.status_code == 404
+      self.rev = nil
+    end
+
     def ==(other)
       self.id == other.id
     end

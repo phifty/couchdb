@@ -7,24 +7,19 @@ class CouchDB::User
 
   attr_accessor :document
 
-  def initialize(user_database)
+  def initialize(user_database, name)
     @user_database = user_database
-    @document = CouchDB::Document.new @user_database.database
-    @document["type"] = "user"
-    @document["salt"] = @user_database.server.password_salt
-  end
 
-  def id=(value)
-    @document["_id"] = value
+    @document = CouchDB::Document.new @user_database.database
+    @document["_id"] = "org.couchdb.user:#{name}"
+    @document["type"] = "user"
+    @document["name"] = name
+    @document["salt"] = @user_database.server.password_salt
+    @document["roles"] = [ ]
   end
 
   def id
     @document["_id"]
-  end
-
-  def name=(value)
-    @document["name"] = value
-    self.id = "org.couchdb.user:#{value}"
   end
 
   def name
@@ -56,13 +51,11 @@ class CouchDB::User
   end
 
   def save
+    document = CouchDB::Document.new @user_database.database
+    document.id = self.id
+    document.fetch_rev
+    @document["_rev"] = document.rev if document.rev
     @document.save
-  rescue Transport::UnexpectedStatusCodeError => error
-    raise error unless error.status_code == 409
-    old_document = @document
-    load
-    @document["name"], @document["password_sha"], @document["roles"] = old_document.values_at "name", "password_sha", "roles"
-    retry
   end
 
   def destroy
