@@ -31,7 +31,7 @@ describe "user management" do
       @user.save
       @user.load
       @user.name.should == "test_user"
-      @user.password.should == "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+      @user.password.should == "f438229716cab43569496f3a3630b3727524b81b"
       @user.roles.should == [ "dummy" ]
     end
 
@@ -55,7 +55,7 @@ describe "user management" do
     it "should update all attributes" do
       @user.save
       @user.load
-      @user.password.should == "e828a54a1466fcd832acfdc98de0bda415ef430a"
+      @user.password.should == "9ab52af5e5eb1cac7c2ff6eac610872bf0e6ab5c"
     end
 
   end

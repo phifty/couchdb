@@ -56,7 +56,7 @@ module CouchDB
       self.rev = properties["_rev"]
     rescue Transport::UnexpectedStatusCodeError => error
       raise error unless error.status_code == 404
-      self.rev = nil
+      @properties.delete "_rev"
     end
 
     def ==(other)

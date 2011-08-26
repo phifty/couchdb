@@ -52,6 +52,10 @@ module CouchDB
       Collection.new self, url + "/_all_docs", options
     end
 
+    def security
+      @security ||= CouchDB::Security.new self
+    end
+
     def authentication_options
       @server.authentication_options
     end

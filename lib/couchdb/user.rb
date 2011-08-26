@@ -27,7 +27,7 @@ class CouchDB::User
   end
 
   def password=(value)
-    @document["password_sha"] = Digest::SHA1.hexdigest value
+    @document["password_sha"] = Digest::SHA1.hexdigest(value + @user_database.database.server.password_salt)
   end
 
   def password
@@ -51,10 +51,7 @@ class CouchDB::User
   end
 
   def save
-    document = CouchDB::Document.new @user_database.database
-    document.id = self.id
-    document.fetch_rev
-    @document["_rev"] = document.rev if document.rev
+    @document.fetch_rev
     @document.save
   end
 
