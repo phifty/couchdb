@@ -5,19 +5,27 @@ module CouchDB
   # of a CouchDB server.
   class Server
 
-    attr_accessor :host
-    attr_accessor :port
+    attr_writer :host
+    attr_writer :port
     attr_accessor :username
     attr_accessor :password
 
     attr_accessor :password_salt
 
-    def initialize(host = "localhost", port = 5984, username = nil, password = nil)
+    def initialize(host = nil, port = nil, username = nil, password = nil)
       @host, @port, @username, @password = host, port, username, password
     end
 
+    def host
+      @host || "localhost"
+    end
+
+    def port
+      @port || 5984
+    end
+
     def ==(other)
-      other.is_a?(self.class) && @host == other.host && @port == other.port
+      other.is_a?(self.class) && self.host == other.host && self.port == other.port
     end
 
     def information
@@ -42,11 +50,11 @@ module CouchDB
     end
 
     def url
-      "http://#{@host}:#{@port}"
+      "http://#{self.host}:#{self.port}"
     end
 
     def authentication_options
-      @username && @password ? { :auth_type => :basic, :username => @username, :password => @password } : { }
+      self.username && self.password ? { :auth_type => :basic, :username => self.username, :password => self.password } : { }
     end
 
     private
