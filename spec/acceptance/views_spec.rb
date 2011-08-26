@@ -4,7 +4,7 @@ describe "views" do
 
   before :each do
     @server = make_test_server
-    @database = CouchDB::Database.new @server, "test"
+    @database = make_test_database @server
     @database.delete_if_exists!
     @database.create_if_missing!
 

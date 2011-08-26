@@ -1,14 +1,14 @@
 require File.join(File.dirname(__FILE__), "..", "spec_helper")
 
-describe CouchDB::Document do
+describe "document handling" do
 
   before :each do
     @server = make_test_server
-    @database = CouchDB::Database.new @server, "test"
+    @database = make_test_database @server
     @database.delete_if_exists!
     @database.create_if_missing!
 
-    @document = described_class.new @database, "_id" => "test_document_1", "test" => "test value"
+    @document = CouchDB::Document.new @database, "_id" => "test_document_1", "test" => "test value"
     @document.save
   end
 
@@ -16,7 +16,7 @@ describe CouchDB::Document do
     @document.destroy
   end
 
-  describe "load" do
+  describe "loading" do
 
     it "should load the document's properties" do
       @document["test"] = nil
@@ -26,9 +26,9 @@ describe CouchDB::Document do
 
   end
 
-  describe "save" do
+  describe "saving" do
 
-    context "on a new model" do
+    context "of a new model" do
 
       before :each do
         begin
@@ -46,7 +46,7 @@ describe CouchDB::Document do
 
     end
 
-    context "on an existing model" do
+    context "of an existing model" do
 
       it "should update the document" do
         lambda do
@@ -59,7 +59,7 @@ describe CouchDB::Document do
 
   end
 
-  describe "destroy" do
+  describe "destroying" do
 
     it "should destroy the document" do
       lambda do

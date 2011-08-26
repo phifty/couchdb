@@ -13,7 +13,7 @@ describe "database security" do
     @user.roles = [ "dummy" ]
     @user.save
 
-    @database = CouchDB::Database.new @server, "test"
+    @database = make_test_database @server
     @database.delete_if_exists!
     @database.create_if_missing!
     @database.security.administrators.clear!

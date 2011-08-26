@@ -1,13 +1,13 @@
 require File.join(File.dirname(__FILE__), "..", "spec_helper")
 
-describe CouchDB::Database do
+describe "database management" do
 
   before :each do
     @server = make_test_server
-    @database = described_class.new @server, "test"
+    @database = make_test_database @server
   end
 
-  describe "create!" do
+  describe "creating a database" do
 
     before :each do
       @database.delete_if_exists!
@@ -20,7 +20,7 @@ describe CouchDB::Database do
 
   end
 
-  describe "delete!" do
+  describe "deleting a database" do
 
     before :each do
       @database.create_if_missing!
@@ -33,7 +33,7 @@ describe CouchDB::Database do
 
   end
 
-  describe "information" do
+  describe "fetching information about a database" do
 
     before :each do
       @database.create_if_missing!
@@ -45,7 +45,7 @@ describe CouchDB::Database do
 
   end
 
-  describe "documents" do
+  describe "fetching all documents of a database" do
 
     it "should return a collection" do
       @database.documents.should be_instance_of(CouchDB::Collection)

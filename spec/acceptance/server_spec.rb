@@ -1,12 +1,12 @@
 require File.join(File.dirname(__FILE__), "..", "spec_helper")
 
-describe CouchDB::Server do
+describe "server" do
 
   before :each do
     @server = make_test_server
   end
 
-  describe "information" do
+  describe "fetching information" do
 
     it "should return some information about the server" do
       @server.information.should == { "couchdb" => "Welcome", "version" => "1.0.1" }
@@ -14,7 +14,7 @@ describe CouchDB::Server do
 
   end
 
-  describe "statistics" do
+  describe "fetching statistics" do
 
     it "should return some statistics about the server" do
       @server.statistics.should be_instance_of(Hash)
@@ -22,7 +22,7 @@ describe CouchDB::Server do
 
   end
 
-  describe "database_names" do
+  describe "fetching database_names" do
 
     it "should return the names of all databases" do
       @server.database_names.should be_instance_of(Array)
@@ -30,7 +30,7 @@ describe CouchDB::Server do
 
   end
 
-  describe "uuids" do
+  describe "fetching uuids" do
 
     it "should return the given number of generated uuids" do
       uuids = @server.uuids 4
