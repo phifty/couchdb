@@ -3,7 +3,7 @@
 Gem::Specification.new do |specification|
   specification.name              = "couchdb"
   specification.version           = "0.2.0"
-  specification.date              = "2011-02-21"
+  specification.date              = "2011-08-26"
 
   specification.authors           = [ "Philipp Brüll" ]
   specification.email             = "b.phifty@gmail.com"
