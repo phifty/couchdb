@@ -3,8 +3,11 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_hel
 describe CouchDB::Database do
 
   before :each do
-    Transport::JSON.stub(:request)
-    @server = mock CouchDB::Server, :url => "http://host:1234", :database_names => [ "test" ]
+    Transport::JSON.stub :request => nil
+    @server = mock CouchDB::Server,
+                   :url => "http://host:1234",
+                   :database_names => [ "test" ],
+                   :authentication_options => { }
 
     @database = CouchDB::Database.new @server, "test"
   end

@@ -4,7 +4,7 @@ describe CouchDB::Collection do
 
   before :each do
     Transport::JSON.stub(:request)
-    @database = mock CouchDB::Database
+    @database = mock CouchDB::Database, :authentication_options => { }
 
     @collection = described_class.new @database, "http://host:1234/test/_all_docs"
   end

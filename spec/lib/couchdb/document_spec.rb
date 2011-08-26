@@ -4,7 +4,9 @@ describe CouchDB::Document do
 
   before :each do
     Transport::JSON.stub(:request)
-    @database = mock CouchDB::Database, :url => "http://host:1234/test"
+    @database = mock CouchDB::Database,
+                     :url => "http://host:1234/test",
+                     :authentication_options => { }
     @document = described_class.new @database, "_id" => "test_document_1"
   end
 
@@ -182,9 +184,11 @@ describe CouchDB::Document do
         @document.rev.should == 1
       end
 
-      it "should return false on wrong status code" do
-        Transport::JSON.stub(:request).and_raise(Transport::UnexpectedStatusCodeError.new(404))
-        @document.save.should be_false
+      it "should upgrade some status errors" do
+        Transport::JSON.stub(:request).and_raise(Transport::UnexpectedStatusCodeError.new(401))
+        lambda do
+          @document.save
+        end.should raise_error(CouchDB::Document::UnauthorizedError)
       end
 
     end
@@ -219,9 +223,11 @@ describe CouchDB::Document do
         @document.rev.should == 2
       end
 
-      it "should return false on wrong status code" do
-        Transport::JSON.stub!(:request).and_raise(Transport::UnexpectedStatusCodeError.new(404))
-        @document.save.should be_false
+      it "should upgrade some status errors" do
+        Transport::JSON.stub(:request).and_raise(Transport::UnexpectedStatusCodeError.new(401))
+        lambda do
+          @document.save
+        end.should raise_error(CouchDB::Document::UnauthorizedError)
       end
 
     end

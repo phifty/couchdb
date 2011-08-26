@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "..", "spec_helper")
 describe CouchDB::Document do
 
   before :each do
-    @server = CouchDB::Server.new
+    @server = CouchDB::Server.new "localhost", 5984, "test", "test"
     @database = CouchDB::Database.new @server, "test"
     @database.delete_if_exists!
     @database.create_if_missing!
