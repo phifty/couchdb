@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "..", "spec_helper")
 describe CouchDB::Server do
 
   before :each do
-    @server = described_class.new "localhost", 5984, "test", "test"
+    @server = make_test_server
   end
 
   describe "information" do

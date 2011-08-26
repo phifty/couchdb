@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 describe "views" do
 
   before :each do
-    @server = CouchDB::Server.new "localhost", 5984, "test", "test"
+    @server = make_test_server
     @database = CouchDB::Database.new @server, "test"
     @database.delete_if_exists!
     @database.create_if_missing!

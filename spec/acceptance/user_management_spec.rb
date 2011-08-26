@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "..", "spec_helper")
 describe "user management" do
 
   before :each do
-    @server = CouchDB::Server.new "localhost", 5984, "test", "test"
+    @server = make_test_server
     @server.password_salt = "salt"
 
     @user_database = @server.user_database
