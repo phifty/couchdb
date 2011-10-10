@@ -4,6 +4,8 @@
 The intend of this project is to provide a plain, straight-forward abstraction of the CouchDB REST API. The resources
 exposed by the API are simply wrapped into classes.
 
+{<img src="http://travis-ci.org/phifty/couchdb.png" />}[http://travis-ci.org/phifty/couchdb]
+
 == An example
 
   server = CouchDB::Server.new "localhost", 5984

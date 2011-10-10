@@ -2,6 +2,7 @@ source :rubygems
 
 gem "transport", ">= 1.0.1"
 
-group :development do
+group :test do
   gem "rspec"
+  gem "reek"
 end
