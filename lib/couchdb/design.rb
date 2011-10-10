@@ -21,7 +21,7 @@ module CouchDB
     end
 
     def id=(value)
-      super (value =~ /^_design\//) ? value : "_design/#{value}"
+      super((value =~ /^_design\//) ? value : "_design/#{value}")
     end
 
     def language
