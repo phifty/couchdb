@@ -16,7 +16,8 @@ module CouchDB
     end
 
     def id
-      super.sub /^_design\//, ""
+      id = super
+      id ? id.sub(/^_design\//, "") : nil
     end
 
     def id=(value)
