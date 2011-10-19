@@ -102,6 +102,20 @@ describe CouchDB::Database do
 
   end
 
+  describe "compact!" do
+
+    it "should compact the database" do
+      Transport::JSON.should_receive(:request).with(
+        :post,
+        "http://host:1234/test/_compact",
+        :expected_status_code => 202,
+        :body => { }
+      )
+      @database.compact!
+    end
+
+  end
+
   describe "information" do
 
     it "should request database information" do

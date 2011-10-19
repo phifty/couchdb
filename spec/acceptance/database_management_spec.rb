@@ -33,6 +33,24 @@ describe "database management" do
 
   end
 
+  describe "compacting a database" do
+
+    before :each do
+      @database.delete_if_exists!
+      @database.create_if_missing!
+
+      @document = CouchDB::Document.new @database, "_id" => "test_document_1", "test" => "test value"
+      @document.save
+      @document.destroy
+    end
+
+    it "should remove destroyed documents" do
+      @database.compact!
+      @database.information["compact_running"].should be_true
+    end
+
+  end
+
   describe "fetching information about a database" do
 
     before :each do

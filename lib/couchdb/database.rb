@@ -36,6 +36,10 @@ module CouchDB
       delete! if exists?
     end
 
+    def compact!
+      Transport::JSON.request :post, "#{url}/_compact", authentication_options.merge(:expected_status_code => 202, :body => { })
+    end
+
     def information
       Transport::JSON.request :get, url, authentication_options.merge(:expected_status_code => 200)
     end
