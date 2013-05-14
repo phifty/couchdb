@@ -1,16 +1,16 @@
-require File.join(File.dirname(__FILE__), "..", "spec_helper")
+require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
-describe "database security" do
+describe 'database security' do
 
   before :each do
     @server = make_test_server
-    @server.password_salt = "salt"
+    @server.password_salt = 'salt'
 
     @user_database = @server.user_database
 
-    @user = CouchDB::User.new @user_database, "test_user"
-    @user.password = "test"
-    @user.roles = [ "dummy" ]
+    @user = CouchDB::User.new @user_database, 'test_user'
+    @user.password = 'test'
+    @user.roles = %w{dummy}
     @user.save
 
     @database = make_test_database @server
@@ -19,43 +19,43 @@ describe "database security" do
     @database.security.administrators.clear!
     @database.security.readers.clear!
 
-    @design = CouchDB::Design.new @database, "test"
+    @design = CouchDB::Design.new @database, 'test'
     @design.save
   end
 
-  describe "adding an user to the database administrators" do
+  describe 'adding an user to the database administrators' do
 
     before :each do
       @database.security.administrators << @user
       @database.security.save
 
-      @server.username = "test_user"
-      @server.password = "test"
+      @server.username = 'test_user'
+      @server.password = 'test'
     end
 
-    it "should allow the user to manipulate the database content" do
+    it 'should allow the user to manipulate the database content' do
       result = @design.save
       result.should be_true
     end
 
   end
 
-  describe "adding an user to the database readers" do
+  describe 'adding an user to the database readers' do
 
     before :each do
       @database.security.readers << @user
       @database.security.save
 
-      @server.username = "test_user"
-      @server.password = "test"
+      @server.username = 'test_user'
+      @server.password = 'test'
     end
 
-    it "should allow the user to read the database content" do
+    it 'should allow the user to read the database content' do
       result = @design.load
       result.should be_true
     end
 
-    it "should deny the user to manipulate the database content" do
+    it 'should deny the user to manipulate the database content' do
       lambda do
         @design.save
       end.should raise_error(CouchDB::Document::UnauthorizedError)
@@ -63,39 +63,39 @@ describe "database security" do
 
   end
 
-  describe "adding a role to the database administrators" do
+  describe 'adding a role to the database administrators' do
 
     before :each do
-      @database.security.administrators << "dummy"
+      @database.security.administrators << 'dummy'
       @database.security.save
 
-      @server.username = "test_user"
-      @server.password = "test"
+      @server.username = 'test_user'
+      @server.password = 'test'
     end
 
-    it "should allow the user to manipulate the database content" do
+    it 'should allow the user to manipulate the database content' do
       result = @design.save
       result.should be_true
     end
 
   end
 
-  describe "adding a role to the database readers" do
+  describe 'adding a role to the database readers' do
 
     before :each do
-      @database.security.readers << "dummy"
+      @database.security.readers << 'dummy'
       @database.security.save
 
-      @server.username = "test_user"
-      @server.password = "test"
+      @server.username = 'test_user'
+      @server.password = 'test'
     end
 
-    it "should allow the user to read the database content" do
+    it 'should allow the user to read the database content' do
       result = @design.load
       result.should be_true
     end
 
-    it "should deny the user to manipulate the database content" do
+    it 'should deny the user to manipulate the database content' do
       lambda do
         @design.save
       end.should raise_error(CouchDB::Document::UnauthorizedError)

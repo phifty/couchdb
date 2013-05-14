@@ -1,47 +1,47 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'spec_helper'))
 
 describe CouchDB::Database do
 
   before :each do
     Transport::JSON.stub :request => nil
     @server = mock CouchDB::Server,
-                   :url => "http://host:1234",
-                   :database_names => [ "test" ],
+                   :url => 'http://host:1234',
+                   :database_names => [ 'test' ],
                    :authentication_options => { }
 
-    @database = CouchDB::Database.new @server, "test"
+    @database = CouchDB::Database.new @server, 'test'
   end
 
-  describe "==" do
+  describe '==' do
 
-    it "should be true when comparing two equal databases" do
-      @database.should == described_class.new(@server, "test")
+    it 'should be true when comparing two equal databases' do
+      @database.should == described_class.new(@server, 'test')
     end
 
-    it "should be false when comparing two different databases" do
-      @database.should_not == described_class.new(@server, "different")
+    it 'should be false when comparing two different databases' do
+      @database.should_not == described_class.new(@server, 'different')
     end
 
   end
 
-  describe "===" do
+  describe '===' do
 
-    it "should be true when comparing a database object with itself" do
+    it 'should be true when comparing a database object with itself' do
       @database.should === @database
     end
 
-    it "should be false when comparing a database object with another database object" do
-      @database.should_not === described_class.new(@server, "test")
+    it 'should be false when comparing a database object with another database object' do
+      @database.should_not === described_class.new(@server, 'test')
     end
 
   end
 
-  describe "create!" do
+  describe 'create!' do
 
-    it "should request the create of the database" do
+    it 'should request the create of the database' do
       Transport::JSON.should_receive(:request).with(
         :put,
-        "http://host:1234/test",
+        'http://host:1234/test',
         :expected_status_code => 201
       )
       @database.create!
@@ -49,19 +49,19 @@ describe CouchDB::Database do
 
   end
 
-  describe "create_if_missing!" do
+  describe 'create_if_missing!' do
 
     before :each do
       @database.stub(:create!)
     end
 
-    it "should not call create! if the database exists" do
+    it 'should not call create! if the database exists' do
       @database.stub(:exists?).and_return(true)
       @database.should_not_receive(:create!)
       @database.create_if_missing!
     end
 
-    it "should call create! if the database not exists" do
+    it 'should call create! if the database not exists' do
       @database.stub(:exists?).and_return(false)
       @database.should_receive(:create!)
       @database.create_if_missing!
@@ -69,12 +69,12 @@ describe CouchDB::Database do
 
   end
 
-  describe "delete!" do
+  describe 'delete!' do
 
-    it "should delete the database" do
+    it 'should delete the database' do
       Transport::JSON.should_receive(:request).with(
         :delete,
-        "http://host:1234/test",
+        'http://host:1234/test',
         :expected_status_code => 200
       )
       @database.delete!
@@ -82,19 +82,19 @@ describe CouchDB::Database do
 
   end
 
-  describe "delete_if_exists!" do
+  describe 'delete_if_exists!' do
 
     before :each do
       @database.stub(:delete!)
     end
 
-    it "should call delete! if the database exists" do
+    it 'should call delete! if the database exists' do
       @database.stub(:exists?).and_return(true)
       @database.should_receive(:delete!)
       @database.delete_if_exists!
     end
 
-    it "should not call delete! if the database not exists" do
+    it 'should not call delete! if the database not exists' do
       @database.stub(:exists?).and_return(false)
       @database.should_not_receive(:delete!)
       @database.delete_if_exists!
@@ -102,12 +102,12 @@ describe CouchDB::Database do
 
   end
 
-  describe "compact!" do
+  describe 'compact!' do
 
-    it "should compact the database" do
+    it 'should compact the database' do
       Transport::JSON.should_receive(:request).with(
         :post,
-        "http://host:1234/test/_compact",
+        'http://host:1234/test/_compact',
         :expected_status_code => 202,
         :body => { }
       )
@@ -116,38 +116,38 @@ describe CouchDB::Database do
 
   end
 
-  describe "information" do
+  describe 'information' do
 
-    it "should request database information" do
+    it 'should request database information' do
       Transport::JSON.should_receive(:request).with(
         :get,
-        "http://host:1234/test",
+        'http://host:1234/test',
         :expected_status_code => 200
-      ).and_return("result")
-      @database.information.should == "result"
+      ).and_return('result')
+      @database.information.should == 'result'
     end
 
   end
 
-  describe "exists?" do
+  describe 'exists?' do
 
-    it "should be true" do
+    it 'should be true' do
       @database.exists?.should be_true
     end
 
-    it "should be false if no database with the given name exists" do
-      database = described_class.new @server, "invalid"
+    it 'should be false if no database with the given name exists' do
+      database = described_class.new @server, 'invalid'
       database.exists?.should be_false
     end
 
   end
 
-  describe "documents" do
+  describe 'documents' do
 
-    it "should return a collection" do
+    it 'should return a collection' do
       collection = @database.documents
       collection.should be_instance_of(CouchDB::Collection)
-      collection.url.should == "http://host:1234/test/_all_docs"
+      collection.url.should == 'http://host:1234/test/_all_docs'
     end
 
   end

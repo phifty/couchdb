@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RUBY_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="jdk" jdkName="RVM: ruby-1.9.3-p327 [global]" jdkType="RUBY_SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.2.3, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.2.1, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json (v1.7.7, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rake (v10.0.4, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="reek (v1.3.1, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec (v2.13.0, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-core (v2.13.0, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-expectations (v2.13.0, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v2.13.0, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby2ruby (v2.0.3, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby_parser (v3.1.1, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sexp_processor (v4.1.4, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="transport (v1.0.3, RVM: ruby-1.9.3-p327 [global]) [gem]" level="application" />
+  </component>
+</module>
+
