@@ -5,7 +5,7 @@ class CouchDB::UserDatabase
   attr_reader :server
   attr_reader :database
 
-  def initialize(server, name = "_users")
+  def initialize(server, name = '_users')
     @server = server
     @database = CouchDB::Database.new @server, name
   end
@@ -13,7 +13,7 @@ class CouchDB::UserDatabase
   def users
     @database.documents.map do |row|
       if row.id =~ /^org\.couchdb\.user:.+$/
-        user = CouchDB::User.new self, row.id.sub(/^org\.couchdb\.user:/, "")
+        user = CouchDB::User.new self, row.id.sub(/^org\.couchdb\.user:/, '')
         user.load
         user
       else

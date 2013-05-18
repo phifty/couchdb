@@ -9,13 +9,13 @@ class CouchDB::Security
     @database = database
 
     @document = CouchDB::Document.new @database
-    @document.id = "_security"
+    @document.id = '_security'
     @document.fetch_rev
-    @document["admins"] = { }
-    @document["readers"] = { }
+    @document['admins'] = { }
+    @document['readers'] = { }
 
-    @administrators = UsersAndRolesProxy.new @document["admins"]
-    @readers = UsersAndRolesProxy.new @document["readers"]
+    @administrators = UsersAndRolesProxy.new @document['admins']
+    @readers = UsersAndRolesProxy.new @document['readers']
   end
 
   def load
@@ -36,8 +36,8 @@ class CouchDB::Security
 
     def initialize(hash)
       @hash = hash
-      @names = @hash["names"] = [ ]
-      @roles = @hash["roles"] = [ ]
+      @names = @hash['names'] = [ ]
+      @roles = @hash['roles'] = [ ]
     end
 
     def clear!

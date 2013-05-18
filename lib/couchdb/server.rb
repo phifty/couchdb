@@ -17,7 +17,7 @@ module CouchDB
     end
 
     def host
-      @host || "localhost"
+      @host || 'localhost'
     end
 
     def port
@@ -29,20 +29,20 @@ module CouchDB
     end
 
     def information
-      Transport::JSON.request :get, url + "/", options
+      Transport::JSON.request :get, url + '/', options
     end
 
     def statistics
-      Transport::JSON.request :get, url + "/_stats", options
+      Transport::JSON.request :get, url + '/_stats', options
     end
 
     def database_names
-      Transport::JSON.request :get, url + "/_all_dbs", options
+      Transport::JSON.request :get, url + '/_all_dbs', options
     end
 
     def uuids(count = 1)
-      response = Transport::JSON.request :get, url + "/_uuids", options.merge(:parameters => { :count => count })
-      response["uuids"]
+      response = Transport::JSON.request :get, url + '/_uuids', options.merge(:parameters => { :count => count })
+      response['uuids']
     end
 
     def user_database

@@ -19,7 +19,7 @@ module CouchDB
       end
 
       def to_hash
-        { @name => { "map" => @map, "reduce" => @reduce } }
+        { @name => { 'map' => @map, 'reduce' => @reduce } }
       end
 
       def collection(options = { })

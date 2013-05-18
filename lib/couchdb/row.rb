@@ -10,7 +10,7 @@ module CouchDB
     attr_reader :value
 
     def initialize(database, attributes = { })
-      @database, @id, @key, @value, @document = database, *attributes.values_at("id", "key", "value", "doc")
+      @database, @id, @key, @value, @document = database, *attributes.values_at('id', 'key', 'value', 'doc')
     end
 
     def document

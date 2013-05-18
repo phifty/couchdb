@@ -53,7 +53,7 @@ module CouchDB
     end
 
     def documents(options = { })
-      Collection.new self, url + "/_all_docs", options
+      Collection.new self, url + '/_all_docs', options
     end
 
     def security

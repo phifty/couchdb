@@ -11,35 +11,35 @@ class CouchDB::User
     @user_database = user_database
 
     @document = CouchDB::Document.new @user_database.database
-    @document["_id"] = "org.couchdb.user:#{name}"
-    @document["type"] = "user"
-    @document["name"] = name
-    @document["salt"] = @user_database.server.password_salt
-    @document["roles"] = [ ]
+    @document['_id'] = "org.couchdb.user:#{name}"
+    @document['type'] = 'user'
+    @document['name'] = name
+    @document['salt'] = @user_database.server.password_salt
+    @document['roles'] = [ ]
   end
 
   def id
-    @document["_id"]
+    @document['_id']
   end
 
   def name
-    @document["name"]
+    @document['name']
   end
 
   def password=(value)
-    @document["password_sha"] = Digest::SHA1.hexdigest(value + @user_database.database.server.password_salt)
+    @document['password_sha'] = Digest::SHA1.hexdigest(value + @user_database.database.server.password_salt)
   end
 
   def password
-    @document["password_sha"]
+    @document['password_sha']
   end
 
   def roles=(value)
-    @document["roles"] = value || [ ]
+    @document['roles'] = value || [ ]
   end
 
   def roles
-    @document["roles"]
+    @document['roles']
   end
 
   def ==(other)
