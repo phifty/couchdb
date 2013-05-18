@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'spec_helper'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'helper'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'lib', 'couchdb', 'design', 'view'))
 
 describe CouchDB::Design::View do

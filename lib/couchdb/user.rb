@@ -1,62 +1,45 @@
 require 'digest/sha1'
+require 'securerandom'
 
 # Abstracts a CouchDB user.
 class CouchDB::User
 
-  attr_reader :user_database
-
-  attr_accessor :document
-
-  def initialize(user_database, name)
-    @user_database = user_database
-
-    @document = CouchDB::Document.new @user_database.database
-    @document["_id"] = "org.couchdb.user:#{name}"
-    @document["type"] = "user"
-    @document["name"] = name
-    @document["salt"] = @user_database.server.password_salt
-    @document["roles"] = [ ]
+  def initialize(database, document = { :type => 'user', :roles => [ ] })
+    @database, @document = database, document
   end
 
   def id
-    @document["_id"]
+    @document['_id']
+  end
+
+  def name=(value)
+    @document['_id'] = "org.couchdb.user:#{value}"
+    @document['name'] = value
   end
 
   def name
-    @document["name"]
+    @document['name']
   end
 
   def password=(value)
-    @document["password_sha"] = Digest::SHA1.hexdigest(value + @user_database.database.server.password_salt)
+    @document['salt'] = SecureRandom.base64 20
+    @document['password_sha'] = Digest::SHA1.hexdigest(value + @document['salt'])
   end
 
   def password
-    @document["password_sha"]
+    @document['password_sha']
   end
 
   def roles=(value)
-    @document["roles"] = value || [ ]
+    @document['roles'] = value || [ ]
   end
 
   def roles
-    @document["roles"]
-  end
-
-  def ==(other)
-    @document == other.document
-  end
-
-  def load
-    @document.load
+    @document['roles']
   end
 
   def save
-    @document.fetch_rev
-    @document.save
-  end
-
-  def destroy
-    @document.destroy
+    @database.documents.update @document
   end
 
 end

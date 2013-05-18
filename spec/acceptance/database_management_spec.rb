@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.join(File.dirname(__FILE__), '..', 'helper')
 
 describe 'database management' do
 
@@ -39,14 +39,15 @@ describe 'database management' do
       @database.delete_if_exists!
       @database.create_if_missing!
 
-      @document = CouchDB::Document.new @database, '_id' => 'test_document_1', 'test' => 'test value'
-      @document.save
-      @document.destroy
+      document = @database.documents.create :test => 'test value'
+      p document
+      @database.documents.destroy document
     end
 
     it 'should remove destroyed documents' do
       @database.compact!
-      @database.information['compact_running'].should be_true
+      p @database.information
+      @database.information[:compact_running].should be_true
     end
 
   end
@@ -66,7 +67,7 @@ describe 'database management' do
   describe 'fetching all documents of a database' do
 
     it 'should return a collection' do
-      @database.documents.should be_instance_of(CouchDB::Collection)
+      @database.documents.all.should be_instance_of(CouchDB::Collection)
     end
 
   end

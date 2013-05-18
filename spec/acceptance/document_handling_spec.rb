@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.join(File.dirname(__FILE__), '..', 'helper')
 
 describe 'document handling' do
 
@@ -8,54 +8,61 @@ describe 'document handling' do
     @database.delete_if_exists!
     @database.create_if_missing!
 
-    @document = CouchDB::Document.new @database, '_id' => 'test_document_1', 'test' => 'test value'
-    @document.save
+    @document = {
+      :_id => 'test_document_1',
+      :test => 'test value'
+    }
+    @database.documents.update @document
   end
 
   after :each do
-    @document.destroy
+    begin
+      @database.documents.destroy @document
+    rescue CouchDB::DocumentNotFound
+      # ignore
+    end
   end
 
-  describe 'loading' do
+  describe 'fetching' do
 
-    it 'should load the document\'s properties' do
-      @document['test'] = nil
-      @document.load
-      @document['test'].should == 'test value'
+    it 'should load the document' do
+      @document[:test] = nil
+      @document = @database.documents.fetch @document
+      @document[:test].should == 'test value'
+    end
+
+    it 'should raise an error if document not found' do
+      lambda do
+        @database.documents.fetch :_id => 'invalid'
+      end.should raise_error(CouchDB::DocumentNotFound)
     end
 
   end
 
-  describe 'saving' do
+  describe 'creating' do
 
-    context 'of a new model' do
-
-      before :each do
-        begin
-          @document.load
-          @document.destroy
-        rescue described_class::NotFoundError
-          # ignore
-        end
+    before :each do
+      begin
+        @database.documents.destroy @document
+      rescue CouchDB::DocumentNotFound
+        # ignore
       end
-
-      it 'should create the document' do
-        lambda do
-          @document.save
-        end.should change(@document, :new?).from(true).to(false)
-      end
-
     end
 
-    context 'of an existing model' do
+    it 'should create the document' do
+      @database.documents.create @document
+      @database.documents.fetch(@document).should_not be_nil
+    end
 
-      it 'should update the document' do
-        lambda do
-          @document['test'] = 'another test value'
-          @document.save
-        end.should change(@document, :rev)
-      end
+  end
 
+  describe 'updating' do
+
+    it 'should update the document' do
+      revision = @document[:_rev]
+      @document[:test] = 'another test value'
+      @database.documents.update @document
+      @document[:_rev].should_not == revision
     end
 
   end
@@ -63,15 +70,16 @@ describe 'document handling' do
   describe 'destroying' do
 
     it 'should destroy the document' do
+      @database.documents.destroy @document
       lambda do
-        @document.destroy
-      end.should change(@document, :exists?).from(true).to(false)
+        @database.documents.fetch(@document).should be_nil
+      end.should raise_error(CouchDB::DocumentNotFound)
     end
 
-    it 'should set the document\'s state to new' do
+    it 'should raise an error if document not found' do
       lambda do
-        @document.destroy
-      end.should change(@document, :new?).from(false).to(true)
+        @database.documents.destroy :_id => 'invalid'
+      end.should raise_error(CouchDB::DocumentNotFound)
     end
 
   end

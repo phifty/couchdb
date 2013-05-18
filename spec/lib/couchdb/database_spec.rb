@@ -1,15 +1,10 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'spec_helper'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'helper'))
 
 describe CouchDB::Database do
 
   before :each do
-    Transport::JSON.stub :request => nil
-    @server = mock CouchDB::Server,
-                   :url => 'http://host:1234',
-                   :database_names => [ 'test' ],
-                   :authentication_options => { }
-
-    @database = CouchDB::Database.new @server, 'test'
+    @server = mock_test_server
+    @database = described_class.new @server, 'test'
   end
 
   describe '==' do
@@ -39,12 +34,7 @@ describe CouchDB::Database do
   describe 'create!' do
 
     it 'should request the create of the database' do
-      Transport::JSON.should_receive(:request).with(
-        :put,
-        'http://host:1234/test',
-        :expected_status_code => 201
-      )
-      @database.create!
+      @database.create!.should == 'database_created'
     end
 
   end
@@ -72,12 +62,7 @@ describe CouchDB::Database do
   describe 'delete!' do
 
     it 'should delete the database' do
-      Transport::JSON.should_receive(:request).with(
-        :delete,
-        'http://host:1234/test',
-        :expected_status_code => 200
-      )
-      @database.delete!
+      @database.delete!.should == 'database_deleted'
     end
 
   end
@@ -105,13 +90,7 @@ describe CouchDB::Database do
   describe 'compact!' do
 
     it 'should compact the database' do
-      Transport::JSON.should_receive(:request).with(
-        :post,
-        'http://host:1234/test/_compact',
-        :expected_status_code => 202,
-        :body => { }
-      )
-      @database.compact!
+      @database.compact!.should == 'database_compacted'
     end
 
   end
@@ -119,12 +98,7 @@ describe CouchDB::Database do
   describe 'information' do
 
     it 'should request database information' do
-      Transport::JSON.should_receive(:request).with(
-        :get,
-        'http://host:1234/test',
-        :expected_status_code => 200
-      ).and_return('result')
-      @database.information.should == 'result'
+      @database.information.should == 'database_information'
     end
 
   end
@@ -147,7 +121,6 @@ describe CouchDB::Database do
     it 'should return a collection' do
       collection = @database.documents
       collection.should be_instance_of(CouchDB::Collection)
-      collection.url.should == 'http://host:1234/test/_all_docs'
     end
 
   end

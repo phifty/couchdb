@@ -1,67 +1,111 @@
 
-module CouchDB
+# The Database class provides methods create, delete and retrieve informations
+# of a CouchDB database.
+class CouchDB::Database
 
-  # The Database class provides methods create, delete and retrieve informations
-  # of a CouchDB database.
-  class Database
+  autoload :User, File.join(File.dirname(__FILE__), 'database', 'user')
 
-    attr_reader :server
-    attr_reader :name
+  attr_reader :documents
 
-    def initialize(server, name)
-      @server, @name = server, name
+  def initialize(server, name)
+    @server, @name = server, name
+    @documents = DocumentsProxy.new self
+  end
+
+  def path
+    "#{@server.path}/#{@name}"
+  end
+
+  def request_json(*arguments)
+    @server.request_json *arguments
+  end
+
+  def ==(other)
+    other.is_a?(self.class) && @name == other.name && @server == other.server
+  end
+
+  def ===(other)
+    object_id == other.object_id
+  end
+
+  def create!
+    request_json :put, path
+  end
+
+  def create_if_missing!
+    create! unless exists?
+  end
+
+  def delete!
+    request_json :delete, path
+  end
+
+  def delete_if_exists!
+    delete! if exists?
+  end
+
+  def compact!
+    request_json :post, "#{path}/_compact"
+  end
+
+  def information
+    request_json :get, path
+  end
+
+  def exists?
+    @server.database_names.include? @name
+  end
+
+  def security
+    @security ||= CouchDB::Document::Security.new self
+  end
+
+  private
+
+  class DocumentsProxy
+
+    def initialize(database)
+      @database = database
     end
 
-    def ==(other)
-      other.is_a?(self.class) && @name == other.name && @server == other.server
+    def create(document)
+      response = @database.request_json :post, @database.path, document
+      document[:_id] = response[:id]
+      document[:_rev] = response[:rev]
+      document
     end
 
-    def ===(other)
-      object_id == other.object_id
+    def update(document)
+      response = @database.request_json :put, path(document), document
+      document[:_rev] = response[:rev]
+      document
     end
 
-    def create!
-      Transport::JSON.request :put, url, authentication_options.merge(:expected_status_code => 201)
+    def fetch(id_or_document)
+      document = @database.request_json :get, path(id_or_document)
+      raise CouchDB::DocumentNotFound if document[:error] == 'not_found'
+      document
     end
 
-    def create_if_missing!
-      create! unless exists?
+    def destroy(response)
+      response = @database.request_json :delete, path_with_revision(response)
+      raise CouchDB::DocumentNotFound if response[:error] == 'not_found'
+      response
     end
 
-    def delete!
-      Transport::JSON.request :delete, url, authentication_options.merge(:expected_status_code => 200)
+    def all(options = { })
+      CouchDB::Collection.new @database, '_all_docs', options
     end
 
-    def delete_if_exists!
-      delete! if exists?
+    private
+
+    def path_with_revision(document)
+      "#{path(document)}?rev=#{document[:_rev]}"
     end
 
-    def compact!
-      Transport::JSON.request :post, "#{url}/_compact", authentication_options.merge(:expected_status_code => 202, :body => { })
-    end
-
-    def information
-      Transport::JSON.request :get, url, authentication_options.merge(:expected_status_code => 200)
-    end
-
-    def exists?
-      @server.database_names.include? @name
-    end
-
-    def url
-      "#{@server.url}/#{@name}"
-    end
-
-    def documents(options = { })
-      Collection.new self, url + "/_all_docs", options
-    end
-
-    def security
-      @security ||= CouchDB::Security.new self
-    end
-
-    def authentication_options
-      @server.authentication_options
+    def path(id_or_document)
+      id = id_or_document.is_a?(Hash) ? id_or_document[:_id] : id_or_document.to_s
+      "#{@database.path}/#{id}"
     end
 
   end

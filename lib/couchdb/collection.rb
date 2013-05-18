@@ -21,13 +21,16 @@ module CouchDB
     ].freeze unless defined?(ARRAY_METHOD_NAMES)
 
     attr_reader :database
-    attr_reader :url
     attr_reader :options
     attr_reader :documents
 
-    def initialize(database, url, options = { })
-      @database, @url, @options = database, url, options
+    def initialize(database, path, options = { })
+      @database, @path, @options = database, path, options
       @documents = DocumentsProxy.new self
+    end
+
+    def path
+      "#{@database.path}/#{@path}"
     end
 
     def total_count
@@ -94,11 +97,11 @@ module CouchDB
     end
 
     def evaluate_total_count
-      @total_count = @response["total_rows"]
+      @total_count = @response['total_rows']
     end
 
     def evaluate_entries
-      @entries = (@response["rows"] || [ ]).map{ |row_hash| Row.new @database, row_hash }
+      @entries = (@response['rows'] || [ ]).map{ |row_hash| Row.new @database, row_hash }
     end
 
     def authentication_options

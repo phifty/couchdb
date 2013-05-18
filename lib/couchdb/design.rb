@@ -4,12 +4,12 @@ module CouchDB
   # The Design class acts as a wrapper for CouchDB design documents.
   class Design < Document
 
-    autoload :View, File.join(File.dirname(__FILE__), "design", "view")
+    autoload :View, File.join(File.dirname(__FILE__), 'design', 'view')
 
     attr_accessor :language
     attr_reader :views
 
-    def initialize(database, id, language = "javascript")
+    def initialize(database, id, language = 'javascript')
       super database
       self.id, self.language = id, language
       @views = ViewsProxy.new self
@@ -17,7 +17,7 @@ module CouchDB
 
     def id
       id = super
-      id ? id.sub(/^_design\//, "") : nil
+      id ? id.sub(/^_design\//, '') : nil
     end
 
     def id=(value)
@@ -25,11 +25,11 @@ module CouchDB
     end
 
     def language
-      self["language"]
+      self['language']
     end
 
     def language=(value)
-      self["language"] = value
+      self['language'] = value
     end
 
     def url
@@ -43,18 +43,18 @@ module CouchDB
 
       def initialize(design)
         @design = design
-        @design["views"] = { }
+        @design['views'] = { }
       end
 
       def <<(view)
-        @design["views"].merge! view.to_hash
+        @design['views'].merge! view.to_hash
       end
 
       def [](name)
         name = name.to_s
-        views = @design["views"]
+        views = @design['views']
         return nil unless views.has_key?(name)
-        map, reduce = views[name].values_at("map", "reduce")
+        map, reduce = views[name].values_at('map', 'reduce')
         Design::View.new @design, name, map, reduce
       end
 

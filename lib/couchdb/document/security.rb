@@ -1,6 +1,6 @@
 
 # Abstracts a CouchDB database security document.
-class CouchDB::Security
+class CouchDB::Document::Security
 
   attr_reader :administrators
   attr_reader :readers
@@ -8,24 +8,26 @@ class CouchDB::Security
   def initialize(database)
     @database = database
 
-    @document = CouchDB::Document.new @database
-    @document.id = "_security"
-    @document.fetch_rev
-    @document["admins"] = { }
-    @document["readers"] = { }
+    @document = {
+      '_id' => '_security',
+      'admins' => { },
+      'readers' => { }
+    }
 
-    @administrators = UsersAndRolesProxy.new @document["admins"]
-    @readers = UsersAndRolesProxy.new @document["readers"]
+    @administrators = UsersAndRolesProxy.new @document['admins']
+    @readers = UsersAndRolesProxy.new @document['readers']
   end
 
   def load
-    @document.load
+    @document = @database.documents.fetch '_security'
+    p @document
+
+    @administrators = UsersAndRolesProxy.new @document['admins']
+    @readers = UsersAndRolesProxy.new @document['readers']
   end
 
   def save
-    @document.save
-  rescue Transport::UnexpectedStatusCodeError => error
-    raise error unless error.status_code == 200
+    @database.documents.update @document
   end
 
   # Proxy to manipulate an array structure of users and roles.
@@ -36,8 +38,8 @@ class CouchDB::Security
 
     def initialize(hash)
       @hash = hash
-      @names = @hash["names"] = [ ]
-      @roles = @hash["roles"] = [ ]
+      @names = @hash['names'] = [ ]
+      @roles = @hash['roles'] = [ ]
     end
 
     def clear!

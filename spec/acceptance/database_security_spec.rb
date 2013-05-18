@@ -1,14 +1,14 @@
-require File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.join(File.dirname(__FILE__), '..', 'helper')
 
 describe 'database security' do
 
   before :each do
     @server = make_test_server
-    @server.password_salt = 'salt'
 
     @user_database = @server.user_database
 
-    @user = CouchDB::User.new @user_database, 'test_user'
+    @user = CouchDB::User.new @user_database
+    @user.name = 'test_user'
     @user.password = 'test'
     @user.roles = %w{dummy}
     @user.save
@@ -19,8 +19,8 @@ describe 'database security' do
     @database.security.administrators.clear!
     @database.security.readers.clear!
 
-    @design = CouchDB::Design.new @database, 'test'
-    @design.save
+    #@design = CouchDB::Design.new @database, 'test'
+    #@design.save
   end
 
   describe 'adding an user to the database administrators' do
@@ -28,12 +28,12 @@ describe 'database security' do
     before :each do
       @database.security.administrators << @user
       @database.security.save
-
-      @server.username = 'test_user'
-      @server.password = 'test'
     end
 
     it 'should allow the user to manipulate the database content' do
+      server = CouchDB::Server.new 'localhost', 5894, 'test_user', 'test'
+      database = make_test_database server
+
       result = @design.save
       result.should be_true
     end

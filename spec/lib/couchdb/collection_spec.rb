@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'spec_helper'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'helper'))
 
 describe CouchDB::Collection do
 
@@ -9,19 +9,7 @@ describe CouchDB::Collection do
     @collection = described_class.new @database, 'http://host:1234/test/_all_docs'
   end
 
-  describe 'initialize' do
-
-    it 'should set the database' do
-      @collection.database.should == @database
-    end
-
-    it 'should set the url' do
-      @collection.url.should == 'http://host:1234/test/_all_docs'
-    end
-
-  end
-
-  describe 'total_count' do
+  describe '#total_count' do
 
     before :each do
       Transport::JSON.stub(:request).and_return({ 'total_rows' => 1 })
@@ -65,7 +53,7 @@ describe CouchDB::Collection do
 
   end
 
-  describe 'first' do
+  describe '#first' do
 
     before :each do
       @row_hash = mock Hash
@@ -93,7 +81,7 @@ describe CouchDB::Collection do
 
   end
 
-  describe 'documents' do
+  describe '#documents' do
 
     before :each do
       @document = mock CouchDB::Document

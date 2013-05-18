@@ -5,6 +5,8 @@ module CouchDB
   # See the README file for more information.
   class Document
 
+    autoload :Security, File.join(File.dirname(__FILE__), 'document', 'security')
+
     # The NotFoundError will be raised if an operation is tried on a document that
     # doesn't exists.
     class NotFoundError < StandardError; end
@@ -28,35 +30,35 @@ module CouchDB
     end
 
     def id
-      self["_id"]
+      self['_id']
     end
 
     def id=(value)
-      self["_id"] = value
+      self['_id'] = value
     end
 
     def rev
-      self["_rev"]
+      self['_rev']
     end
 
     def rev=(value)
-      self["_rev"] = value
+      self['_rev'] = value
     end
 
     def rev?
-      @properties.has_key? "_rev"
+      @properties.has_key? '_rev'
     end
 
     def clear_rev
-      @properties.delete "_rev"
+      @properties.delete '_rev'
     end
 
     def fetch_rev
       properties = Transport::JSON.request :get, url, authentication_options.merge(:expected_status_code => 200)
-      self.rev = properties["_rev"]
+      self.rev = properties['_rev']
     rescue Transport::UnexpectedStatusCodeError => error
       raise error unless error.status_code == 404
-      @properties.delete "_rev"
+      @properties.delete '_rev'
     end
 
     def ==(other)
@@ -89,7 +91,7 @@ module CouchDB
 
     def destroy
       return false if new?
-      Transport::JSON.request :delete, url, authentication_options.merge(:headers => { "If-Match" => self.rev }, :expected_status_code => 200)
+      Transport::JSON.request :delete, url, authentication_options.merge(:headers => { 'If-Match' => self.rev }, :expected_status_code => 200)
       self.clear_rev
       true
     rescue Transport::UnexpectedStatusCodeError => error
@@ -104,8 +106,8 @@ module CouchDB
 
     def create
       response = Transport::JSON.request :post, @database.url, authentication_options.merge(:body => @properties, :expected_status_code => 201)
-      self.id  = response["id"]
-      self.rev = response["rev"]
+      self.id  = response['id']
+      self.rev = response['rev']
       true
     rescue Transport::UnexpectedStatusCodeError => error
       upgrade_status_error error
@@ -114,7 +116,7 @@ module CouchDB
 
     def update
       response = Transport::JSON.request :put, url, authentication_options.merge(:body => @properties, :expected_status_code => 201)
-      self.rev = response["rev"]
+      self.rev = response['rev']
       true
     rescue Transport::UnexpectedStatusCodeError => error
       upgrade_status_error error
