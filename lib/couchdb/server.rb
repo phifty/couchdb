@@ -48,7 +48,8 @@ class CouchDB::Server
   end
 
   def url
-    "http://#{self.host}:#{self.port}"
+    protocol = self.port == 6984 ? "https" : "http"
+    "#{protocol}://#{self.host}:#{self.port}"
   end
 
   def authentication_options
