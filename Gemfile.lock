@@ -1,5 +1,5 @@
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.1)
     json (1.7.7)
@@ -33,3 +33,6 @@ DEPENDENCIES
   reek
   rspec
   transport (>= 1.0.2)
+
+BUNDLED WITH
+   1.11.2
